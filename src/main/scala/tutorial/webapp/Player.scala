@@ -4,8 +4,39 @@ import org.scalajs.dom
 import org.scalajs.dom.document
 import org.scalajs.dom.html.Canvas
 
-object Player {
+case class Player (x: Int, y: Int)
 
+object Game {
+
+  def drawShape(context: dom.CanvasRenderingContext2D, player: Player): Unit = {
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height )
+    context.strokeRect(player.x, player.y, 20, 20)
+  }
+
+  def setupKeyEventListener(context: dom.CanvasRenderingContext2D, intialX: Int, initialY: Int) = {
+
+    var player = Player(intialX, initialY)
+
+    def keyListener(e: dom.KeyboardEvent) = {
+      println("Da keycode is " + e.keyCode)
+
+
+      player = e.keyCode match {
+        case 38 => Player(player.x, player.y -5)
+        case 37 => Player(player.x -5, player.y)
+        case 39 => Player(player.x +5, player.y)
+        case 40 => Player(player.x, player.y +5)
+      }
+
+      drawShape(context, player)
+
+    }
+
+    drawShape(context, player)
+
+    dom.window.addEventListener(
+    "keydown", keyListener, false)
+  }
   def initScreen(targetNode:dom.Node): dom.CanvasRenderingContext2D = {
     val width = 600
     val height = 400
@@ -23,30 +54,9 @@ object Player {
     document.createElement("p")
     targetNode.appendChild(canvas)
 
-    def moveShape () = {
-      val keyPress = dom.window.addEventListener(
-        "keydown", (e: dom.KeyboardEvent) => {
-          println("Da keycode is " + e.keyCode)
-
-          e.keyCode match {
-            case 38 => {
-              shape(shapePositionX, shapePositionY)
-              shape(shapePositionX, shapePositionY + 5)
-            }
-            case 37 => shape(shapePositionX, shapePositionY)
-            case 39 => shape(shapePositionX, shapePositionY)
-            case 40 => shape(shapePositionX, shapePositionY)
-          }
-        }, false)
-    }
-
-    def shape(x: Int, y: Int, w: Int = 20, d: Int = 20): Unit = {
-      val rect = ctx.strokeRect(x,y,w,d)
-    }
-
-    shape(shapePositionX, shapePositionY)
-    moveShape()
+    setupKeyEventListener(ctx, shapePositionX, shapePositionY)
     ctx
+
   }
 }
 

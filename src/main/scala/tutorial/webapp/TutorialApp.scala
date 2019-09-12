@@ -10,8 +10,8 @@ object TutorialApp {
   def main(args: Array[String]): Unit = {
 
     addParagraph(createParagraph(), "Hello Word")
-    Player.initScreen(createParagraph())
-    Player
+    Game.initScreen(createParagraph())
+    Game
   }
 
   @JSExportTopLevel("addClickedMessage")
